@@ -22,7 +22,7 @@ from .utils import FieldsEnum
 from .utils import MetricsEnum
 
 
-app = FastAPI(root_path=get_root_path(), description="""
+app = FastAPI(root_path=get_root_path(), title="Maken", description="""
 Maken Elasticsearch API
 """)
 app.add_middleware(
