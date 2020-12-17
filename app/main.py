@@ -78,7 +78,11 @@ async def get_similar(
         filters=filters
     )
     results = await elastic.search(body=body, index=index)
-    hits = results["hits"]["hits"][1:] # first match is always the query item
+    hits = sorted(
+        results["hits"]["hits"][1:],  # first match is always the query item
+        key=lambda x: x["fields"]["similarity"][0],
+        reverse=True,
+    )
     if scale:
         return scale_hits(hits, scale_to=scale)
     else:
