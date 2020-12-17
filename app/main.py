@@ -86,9 +86,14 @@ async def get_similar(
 
 @app.get("/random/{index}")
 @app.get("/random/{index}/", include_in_schema=False)
-async def get_random_set(index: str="*", fields: Optional[str]=None) -> list:
+async def get_random_set(
+    index: str="*",
+    size: Optional[int]=20,
+    fields: Optional[str]=None,
+) -> list:
     """Extract a random set of elements for the specified index"""
     random_query = {
+        "size": size,
         "query": {
             "function_score": {
                 "random_score": {"field": "_seq_no"}
