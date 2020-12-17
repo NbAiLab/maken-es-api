@@ -6,10 +6,10 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-
 from fastapi import FastAPI
 from fastapi import Response
 from fastapi import status
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import RedirectResponse
 
 from .queries import get_by_field
@@ -24,6 +24,13 @@ from .utils import MetricsEnum
 app = FastAPI(description="""
 Maken Elasticsearch API
 """)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 elastic = get_elastic()
 logger = get_loggers()
 
