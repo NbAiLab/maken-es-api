@@ -31,6 +31,7 @@ def get_similar_by_vector(
     vector: List[float],
     k: int=25,
     size: int=100,
+    offset: Optional[int]=None,
     fields: Optional[List[str]]=None,
     filters: Optional[dict]=None,
     vector_field: str="vector",
@@ -58,6 +59,8 @@ def get_similar_by_vector(
             },
         }
     }
+    if offset:
+        query["from"] = offset
     if fields:
         for field in fields:
             field = field.strip()

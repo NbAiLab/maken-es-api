@@ -50,6 +50,7 @@ async def get_similar(
     index: str="*",
     field: FieldsEnum=FieldsEnum.filename.value,
     size: int=100,
+    offset: Optional[int]=None,
     k: int=25,
     metric: Optional[MetricsEnum]=MetricsEnum.cosine.value,
     scale: Optional[Tuple[int, int]]=None,
@@ -74,6 +75,7 @@ async def get_similar(
         vector,
         k=k,
         size=size + 1,
+        offset=offset,
         fields=fields.split(",") if fields else [],
         filters=filters
     )
