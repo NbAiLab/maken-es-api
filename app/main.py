@@ -39,7 +39,7 @@ logger = get_loggers()
 @app.get("/")
 async def root():
     """Redirets to documentation"""
-    return RedirectResponse(url="/docs")
+    return RedirectResponse(url=f"{get_root_path()}/docs")
 
 
 @app.post("/similarity/{index}/{field}")
