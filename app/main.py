@@ -1,12 +1,24 @@
 #!/usr/bin/env python
 import os
-from typing import Optional, Union, List
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
 
-from fastapi import FastAPI, Response, status
+
+from fastapi import FastAPI
+from fastapi import Response
+from fastapi import status
 from starlette.responses import RedirectResponse
 
-from .queries import get_by_field, get_similar_by_vector
-from .utils import get_elastic, get_loggers, FieldsEnum, MetricsEnum
+from .queries import get_by_field
+from .queries import get_similar_by_vector
+from .utils import get_elastic
+from .utils import get_loggers
+from .utils import scale_hits
+from .utils import FieldsEnum
+from .utils import MetricsEnum
 
 
 app = FastAPI(description="""
@@ -31,9 +43,10 @@ async def get_similar(
     field: FieldsEnum=FieldsEnum.filename.value,
     size: int=100,
     k: int=25,
-    metric: Optional[MetricsEnum]=MetricsEnum.score.value,
-    scale: Optional[tuple]=None,
+    metric: Optional[MetricsEnum]=MetricsEnum.cosine.value,
+    scale: Optional[Tuple[int, int]]=None,
     fields: Optional[str]=None,
+    filters: Optional[Dict[str, str]]=None,
 ) -> list:
     """
     Return up to 'size' similar items to the one specified by 'field' with
@@ -54,10 +67,14 @@ async def get_similar(
         k=k,
         size=size + 1,
         fields=fields.split(",") if fields else [],
-        filters=None
+        filters=filters
     )
     results = await elastic.search(body=body, index=index)
-    return results["hits"]["hits"][1:]  # first match is always the query item
+    hits = results["hits"]["hits"][1:] # first match is always the query item
+    if scale:
+        return scale_hits(hits, scale_to=scale)
+    else:
+        return hits
 
 
 @app.get("/random/{index}")
