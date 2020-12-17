@@ -14,6 +14,7 @@ from starlette.responses import RedirectResponse
 
 from .queries import get_by_field
 from .queries import get_similar_by_vector
+from .utils import get_api_context
 from .utils import get_elastic
 from .utils import get_loggers
 from .utils import scale_hits
@@ -38,7 +39,8 @@ logger = get_loggers()
 @app.get("/")
 async def root():
     """Redirets to documentation"""
-    return RedirectResponse(url="/docs")
+    context = get_api_context()
+    return RedirectResponse(url=f"{context}/docs")
 
 
 @app.post("/similarity/{index}/{field}")

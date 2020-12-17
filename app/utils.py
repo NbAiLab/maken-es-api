@@ -20,11 +20,19 @@ class MetricsEnum(enum.Enum):
     euclidean = "euclidean"
 
 
+def is_gunicorn() -> bool:
+    """Checks whether the API is running under gunicorn"""
+    return "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+
+
+def get_api_context() -> str:
+    return os.environ.get("API_CONTEXT", "/maken" if is_gunicorn() else "")
+
+
 def get_loggers() -> None:
     """Sets loggers to work under gunicorn, uvicorn, and FastAPI"""
-    is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
     server_logger = logging.getLogger(
-        "gunicorn.error" if is_gunicorn else "uvicorn"
+        "gunicorn.error" if is_gunicorn() else "uvicorn"
     )
     fastapi_logger.handlers = server_logger.handlers
     if __name__ == "main":
