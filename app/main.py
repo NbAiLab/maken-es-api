@@ -5,8 +5,8 @@ from typing import Optional, Union, List
 from fastapi import FastAPI, Response, status
 from starlette.responses import RedirectResponse
 
-from .queries import get_by_field, get_similar_by_vector
-from .utils import get_elastic, get_loggers, FieldsEnum, MetricsEnum
+from app.queries import get_by_field, get_similar_by_vector
+from app.utils import get_elastic, get_loggers, FieldsEnum, MetricsEnum
 
 
 app = FastAPI(description="""
