@@ -14,15 +14,15 @@ from starlette.responses import RedirectResponse
 
 from .queries import get_by_field
 from .queries import get_similar_by_vector
-from .utils import get_api_context
 from .utils import get_elastic
 from .utils import get_loggers
+from .utils import get_root_path
 from .utils import scale_hits
 from .utils import FieldsEnum
 from .utils import MetricsEnum
 
 
-app = FastAPI(description="""
+app = FastAPI(root_path=get_root_path(), description="""
 Maken Elasticsearch API
 """)
 app.add_middleware(
@@ -39,8 +39,7 @@ logger = get_loggers()
 @app.get("/")
 async def root():
     """Redirets to documentation"""
-    context = get_api_context()
-    return RedirectResponse(url=f"{context}/docs")
+    return RedirectResponse(url="/docs")
 
 
 @app.post("/similarity/{index}/{field}")

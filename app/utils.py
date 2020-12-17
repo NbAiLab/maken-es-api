@@ -25,8 +25,8 @@ def is_gunicorn() -> bool:
     return "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
 
 
-def get_api_context() -> str:
-    return os.environ.get("API_CONTEXT", "/maken" if is_gunicorn() else "")
+def get_root_path() -> str:
+    return os.environ.get("ASGI_ROOT_PATH", "/maken" if is_gunicorn() else "")
 
 
 def get_loggers() -> None:
