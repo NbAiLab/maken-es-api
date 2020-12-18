@@ -75,6 +75,9 @@ def scale_hit(
     scale_to: Tuple[Union[float, int]],
 ) -> float:
     """Scale one value from the range scale_from to scale_to"""
+    if scale_from[1] == scale_from[0]:
+        # Edge case when number of values is 1
+        return scale_to[0]
     scale = (scale_to[1] - scale_to[0]) / (scale_from[1] - scale_from[0])
     capped = min(scale_from[1], max(scale_from[0], value)) - scale_from[0]
     scaled = capped * scale + scale_to[0]
