@@ -2,6 +2,7 @@ import enum
 import logging
 import os
 from typing import Tuple
+from typing import Optional
 from typing import Union
 
 from elasticsearch import AsyncElasticsearch
@@ -56,25 +57,31 @@ def get_elastic() -> AsyncElasticsearch:
     return elastic
 
 
-def scale_hits(hits: list, scale_to: Tuple[Union[float, int]]) -> list:
+def scale_hits(
+    hits: list,
+    scale_to: Tuple[Union[float, int]],
+    scale_from: Optional[Tuple[Union[float, int]]]=None,
+) -> list:
     """Scale similarity values to be in the range defined by scale_to"""
-    similarities = [hit["fields"]["similarity"][0] for hit in hits]
-    scale_from = (min(similarities), max(similarities))
+    if scale_from is None:
+        similarities = [hit["fields"]["similarity"][0] for hit in hits]
+        scale_from = (min(similarities), max(similarities))
     for hit in hits:
         hit["fields"]["scaled"] = [scale_hit(
             hit["fields"]["similarity"][0],
-            scale_from=scale_from,
             scale_to=scale_to,
+            scale_from=scale_from,
         )]
     return hits
 
 
 def scale_hit(
     value: float,
-    scale_from: Tuple[Union[float, int]],
     scale_to: Tuple[Union[float, int]],
+    scale_from: Tuple[Union[float, int]],
 ) -> float:
     """Scale one value from the range scale_from to scale_to"""
+    scale_from = [0.8,1.0]
     if scale_from[1] == scale_from[0]:
         # Edge case when number of values is 1
         return scale_to[0]

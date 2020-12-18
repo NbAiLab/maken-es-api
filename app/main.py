@@ -54,6 +54,7 @@ async def get_similar(
     k: int=25,
     metric: Optional[MetricsEnum]=MetricsEnum.cosine.value,
     scale: Optional[Tuple[int, int]]=None,
+    scale_from: Optional[Tuple[int, int]]=(0.8, 1.0),
     fields: Optional[str]=None,
     filters: Optional[Dict[str, str]]=None,
 ) -> list:
@@ -86,7 +87,7 @@ async def get_similar(
         reverse=True,
     )
     if scale:
-        return scale_hits(hits, scale_to=scale)
+        return scale_hits(hits, scale_to=scale, scale_from=scale_from)
     else:
         return hits
 
