@@ -20,6 +20,7 @@ from .utils import get_root_path
 from .utils import scale_hits
 from .utils import FieldsEnum
 from .utils import MetricsEnum
+from .utils import ScalesEnum
 
 
 app = FastAPI(root_path=get_root_path(), title="Maken", description="""
@@ -53,15 +54,15 @@ async def get_similar(
     offset: Optional[int]=None,
     k: int=25,
     metric: Optional[MetricsEnum]=MetricsEnum.cosine.value,
-    scale: Optional[Tuple[int, int]]=None,
-    scale_from: Optional[Tuple[int, int]]=(0.8, 1.0),
+    scale_to: Optional[Tuple[int, int]]=None,
+    scale_from: Optional[Tuple[float, Union[float, ScalesEnum]]]=None,
     fields: Optional[str]=None,
     filters: Optional[Dict[str, str]]=None,
 ) -> list:
     """
     Return up to 'size' similar items to the one specified by 'field' with
-    'value' in 'index'. Results can also be scaled to range from 'scale[0]' to
-    'scale[1]'. And if needed, only fields in 'fields' will be returned
+    'value' in 'index'. Results can also be scaled to range from 'scale_to[0]' to
+    'scale_to[1]'. And if needed, only fields in 'fields' will be returned
     """
     if field != FieldsEnum.vector:
         results = await elastic.search(
@@ -86,8 +87,8 @@ async def get_similar(
         key=lambda x: x["fields"]["similarity"][0],
         reverse=True,
     )
-    if scale:
-        return scale_hits(hits, scale_to=scale, scale_from=scale_from)
+    if scale_to:
+        return scale_hits(hits, scale_to=scale_to, scale_from=scale_from)
     else:
         return hits
 
