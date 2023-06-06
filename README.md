@@ -4,7 +4,7 @@ This repo contains a few instructions on setting up Open Distro for Elasticsearc
 
 1. Create a new VM. Make sure you have allowed access to its IP on ports 9200, 5600 and 5602.
 2. Follow the instructions in OpenDistro to install Open Distro for Elasticsearch: https://opendistro.github.io/for-elasticsearch-docs/docs/install/deb/ Additionally, the Kibana dashboard can also be installed: https://opendistro.github.io/for-elasticsearch-docs/docs/kibana/#run-kibana-using-the-rpm-or-debian-package
-3. Since in most cases ES will be secured by internal IT, disable SSL and HTTPS
+3. Since in most cases ES will be secured by internal IT, disable SSL and HTTPS. If self-signed, you'll need to run a local proxy for connecting GUIs like [Elasticvue](https://github.com/cars10/elasticvue), as in `PORT=3000 TARGET=https://user:pass@192.168.34.21:9200 node proxy.js`, and then connect to `http://localhost:3000` instead.
 
 Data could be ingested using [maken-es-data](https://github.com/nbailab/maken-es-data). Once Elasticsearch is running with some data, the API can be deployed using Docker as follows:
 
