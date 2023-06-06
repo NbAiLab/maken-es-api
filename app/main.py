@@ -43,6 +43,13 @@ async def root():
     return RedirectResponse(url=f"{get_root_path()}/docs")
 
 
+@app.get("/health")
+@app.get("/health/", include_in_schema=False)
+async def health() -> dict:
+    """Health check"""
+    return {"health": "OK"}
+
+
 @app.post("/similarity/{index}/{field}")
 @app.post("/similarity/{index}/{field}/", include_in_schema=False)
 async def get_similar(
@@ -115,4 +122,3 @@ async def get_random_set(
         ]
     response = await elastic.search(index=index, body=random_query)
     return response['hits']['hits']
-
